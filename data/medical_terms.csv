@@ -1,0 +1,131 @@
+term_id,medical_term,description,category,synonyms
+MED001,Myocardial Infarction,Ischemic necrosis of myocardial tissue resulting from abrupt occlusion of a coronary artery,Cardiology,Heart Attack;Coronary Thrombosis;Cardiac Infarction
+MED002,Hypertension,Persistent elevation of systemic arterial blood pressure above normal physiological levels,Cardiology,High Blood Pressure;Arterial Hypertension
+MED003,Angina Pectoris,Chest pain or discomfort occurring when heart muscle does not receive adequate oxygen-rich blood,Cardiology,Ischemic Chest Pain;Stenocardia
+MED004,Congestive Heart Failure,Inability of the heart to pump adequate blood to meet metabolic tissue requirements,Cardiology,Heart Failure;Cardiac Failure;CHF
+MED005,Cardiac Arrhythmia,Irregularity or disturbance in the rhythm or rate of heartbeat,Cardiology,Dysrhythmia;Irregular Heartbeat
+MED006,Atrial Fibrillation,Rapid irregular heartbeat caused by chaotic electrical impulses in cardiac atria,Cardiology,AFib;Auricular Fibrillation
+MED007,Atherosclerosis,Hardening and narrowing of arterial walls due to lipid and plaque deposition,Cardiology,Arteriosclerotic Vascular Disease;Artery Hardening
+MED008,Bradycardia,Pathologically slow heart rate defined as resting rhythm below sixty beats per minute,Cardiology,Slow Heart Rate;Sinus Bradycardia
+MED009,Tachycardia,Pathologically rapid resting heart rate exceeding one hundred beats per minute,Cardiology,Rapid Heart Rate;Tachyrhythmia
+MED010,Cardiac Arrest,Sudden cessation of functional cardiac contraction and systemic circulation,Cardiology,Circulatory Arrest;Asystole;Sudden Heart Arrest
+MED011,Pericarditis,Inflammation of the pericardial fibroserous sac surrounding the heart,Cardiology,Pericardial Inflammation
+MED012,Endocarditis,Infection or inflammation of the inner lining of heart chambers and valves,Cardiology,Infective Endocarditis;Bacterial Endocarditis
+MED013,Mitral Valve Prolapse,Displacement of abnormally thickened mitral valve leaflets into the left atrium during systole,Cardiology,Barlow's Syndrome;Floppy Mitral Valve
+MED014,Aortic Stenosis,Narrowing of the aortic valve orifice restricting outflow from the left ventricle,Cardiology,Aortic Valve Narrowing;AS
+MED015,Cardiomyopathy,Measurable deterioration of the myocardium causing impaired mechanical or electrical cardiac function,Cardiology,Heart Muscle Disease;Myocardial Disease
+MED016,Deep Vein Thrombosis,Formation of a thrombus within deep veins typically of the lower extremities,Cardiology,DVT;Venous Thrombosis
+MED017,Pulmonary Hypertension,Elevated blood pressure within pulmonary arterial circulation leading to right heart strain,Cardiology,PAH;High Lung Blood Pressure
+MED018,Hypotension,Abnormally low blood pressure below physiological norms causing hypoperfusion,Cardiology,Low Blood Pressure;Hypotensive State
+MED019,Peripheral Artery Disease,Atherosclerotic occlusive disorder of arteries supplying peripheral limbs,Cardiology,PAD;Peripheral Vascular Disease;PVD
+MED020,Ventricular Tachycardia,Rapid heart rate originating in cardiac ventricles that can deteriorate into cardiac arrest,Cardiology,V-Tach;VT
+MED021,Diabetes Mellitus Type 1,Autoimmune destruction of pancreatic beta cells causing absolute insulin deficiency,Endocrinology,Type 1 Diabetes;Juvenile Diabetes;Insulin-Dependent Diabetes
+MED022,Diabetes Mellitus Type 2,Metabolic disorder characterized by peripheral insulin resistance and progressive beta-cell dysfunction,Endocrinology,Type 2 Diabetes;Adult-Onset Diabetes;Non-Insulin Dependent Diabetes
+MED023,Hyperthyroidism,Excessive production and secretion of thyroid hormones by hyperactive thyroid gland,Endocrinology,Overactive Thyroid;Thyrotoxicosis
+MED024,Hypothyroidism,Deficiency of thyroid hormone production leading to slowed metabolic state,Endocrinology,Underactive Thyroid;Myxedema
+MED025,Cushing's Syndrome,Clinical state resulting from chronic exposure to excessive glucocorticoid cortisol levels,Endocrinology,Hypercortisolism;Adrenocortical Hyperfunction
+MED026,Addison's Disease,Primary adrenal insufficiency characterized by inadequate glucocorticoid and mineralocorticoid secretion,Endocrinology,Adrenal Insufficiency;Hypocortisolism
+MED027,Diabetic Ketoacidosis,Acute metabolic emergency in diabetes with marked hyperglycemia and ketone accumulation,Endocrinology,DKA;Diabetic Acidosis
+MED028,Hypoglycemia,Abnormally decreased blood glucose concentration below safe physiological limits,Endocrinology,Low Blood Sugar;Insulin Shock
+MED029,Hyperglycemia,Excessive concentration of glucose circulating in systemic blood plasma,Endocrinology,High Blood Sugar;Elevated Blood Glucose
+MED030,Acromegaly,Hormonal disorder caused by excessive growth hormone secretion after epiphyseal plate closure,Endocrinology,Growth Hormone Excess;Pituitary Gigantism
+MED031,Hashimoto's Thyroiditis,Autoimmune chronic lymphocytic inflammation leading to progressive thyroid destruction,Endocrinology,Chronic Lymphocytic Thyroiditis;Autoimmune Thyroiditis
+MED032,Graves' Disease,Autoimmune disorder causing excessive thyroid hormone synthesis and diffuse goiter,Endocrinology,Toxic Diffuse Goiter;Basedow's Disease
+MED033,Hyperparathyroidism,Overactivity of parathyroid glands causing elevated parathyroid hormone and serum calcium,Endocrinology,Parathyroid Hyperfunction;Hypercalcemic Disorder
+MED034,Pheochromocytoma,Rare catecholamine-secreting neuroendocrine tumor usually arising from adrenal medulla,Endocrinology,Adrenal Medullary Chromaffinoma
+MED035,Gestational Diabetes,Carbohydrate intolerance of variable severity with onset or first recognition during pregnancy,Endocrinology,GDM;Pregnancy-Induced Diabetes
+MED036,Metabolic Syndrome,Cluster of biochemical and physiological abnormalities increasing cardiovascular and diabetic risk,Endocrinology,Syndrome X;Insulin Resistance Syndrome
+MED037,Cerebrovascular Accident,Acute interruption of blood supply to brain tissue causing neurological deficits,Neurology,Stroke;Brain Attack;CVA;Cerebral Infarction
+MED038,Transient Ischemic Attack,Brief temporary episode of neurological dysfunction caused by focal brain ischemia without permanent infarction,Neurology,TIA;Mini-Stroke
+MED039,Epilepsy,Neurological disorder characterized by recurrent unprovoked epileptic seizures,Neurology,Seizure Disorder;Convulsive Disorder
+MED040,Parkinson's Disease,Neurodegenerative disorder of substantia nigra dopaminergic neurons causing tremor and rigidity,Neurology,Paralysis Agitans;Idiopathic Parkinsonism
+MED041,Alzheimer's Disease,Progressive neurodegenerative cortical disease leading to dementia and memory decline,Neurology,Senile Dementia of Alzheimer Type;AD
+MED042,Multiple Sclerosis,Chronic inflammatory demyelinating disease of the central nervous system,Neurology,MS;Disseminated Sclerosis
+MED043,Amyotrophic Lateral Sclerosis,Fatal progressive neurodegenerative disease affecting upper and lower motor neurons,Neurology,ALS;Lou Gehrig's Disease;Motor Neuron Disease
+MED044,Migraine,Recurrent neurovascular headache disorder characterized by throbbing unilateral pain and nausea,Neurology,Hemicrania;Vascular Headache
+MED045,Peripheral Neuropathy,Damage or dysfunction of peripheral nerves causing numbness tingling and weakness,Neurology,Peripheral Nerve Disorder;Neuritis
+MED046,Meningitis,Acute inflammation of protective membranes covering brain and spinal cord,Neurology,Meningeal Inflammation;Spinal Meningitis
+MED047,Encephalitis,Acute inflammatory pathology affecting parenchyma of the brain,Neurology,Brain Inflammation;Cerebritis
+MED048,Myasthenia Gravis,Autoimmune neuromuscular junction disorder causing fatigable skeletal muscle weakness,Neurology,MG;Erb-Goldflam Disease
+MED049,Bell's Palsy,Acute idiopathic peripheral facial nerve paralysis resulting in hemifacial muscle weakness,Neurology,Facial Nerve Palsy;Idiopathic Facial Paralysis
+MED050,Tension Headache,Common mild-to-moderate headache diffuse band-like pressure across forehead,Neurology,Stress Headache;Muscle Contraction Headache
+MED051,Cluster Headache,Severely painful neurovascular primary headache presenting in cyclical patterns around one eye,Neurology,Histamine Headache;Horton's Cephalea
+MED052,Guillain-Barre Syndrome,Acute autoimmune inflammatory demyelinating polyradiculoneuropathy causing ascending paralysis,Neurology,GBS;Acute Idiopathic Polyneuritis
+MED053,Chronic Obstructive Pulmonary Disease,Progressive lung disease marked by chronic airflow limitation not fully reversible,Pulmonology,COPD;Chronic Airflow Obstruction
+MED054,Bronchial Asthma,Chronic inflammatory respiratory disorder characterized by bronchial hyperreactivity and wheezing,Pulmonology,Asthma;Reversible Airway Obstruction
+MED055,Pneumonia,Acute infection and inflammation of pulmonary alveoli and lung parenchyma,Pulmonology,Pneumonitis;Lung Infection;Chest Infection
+MED056,Pulmonary Embolism,Acute blockage of pulmonary arterial bed by dislodged venous thromboembolism,Pulmonology,PE;Pulmonary Artery Thromboembolism
+MED057,Pneumothorax,Abnormal accumulation of air in the pleural space leading to lung collapse,Pulmonology,Collapsed Lung;Aero-Pleural Air
+MED058,Bronchiectasis,Irreversible abnormal dilatation of bronchi accompanied by chronic cough and sputum,Pulmonology,Bronchial Dilatation
+MED059,Sleep Apnea,Repetitive cessation or reduction of airflow during sleep caused by upper airway collapse,Pulmonology,Obstructive Sleep Apnea;OSA
+MED060,Idiopathic Pulmonary Fibrosis,Chronic progressive fibrosing interstitial pneumonia of unknown etiology,Pulmonology,IPF;Cryptogenic Fibrosing Alveolitis
+MED061,Acute Respiratory Distress Syndrome,Rapid-onset respiratory failure due to diffuse alveolar damage and pulmonary edema,Pulmonology,ARDS;Shock Lung
+MED062,Pleural Effusion,Pathological accumulation of fluid within pleural space surrounding lungs,Pulmonology,Fluid on the Lung;Pleural Exudate
+MED063,Acute Bronchitis,Self-limiting inflammation of the large bronchial airways usually due to viral infection,Pulmonology,Chest Cold;Tracheobronchitis
+MED064,Cystic Fibrosis,Autosomal recessive genetic disorder causing sticky viscous mucus accumulation in lungs and pancreas,Pulmonology,Mucoviscidosis;CF
+MED065,Gastroesophageal Reflux Disease,Chronic condition where acidic gastric contents flow back into esophagus causing mucosal injury,Gastroenterology,GERD;Acid Reflux;Reflux Esophagitis
+MED066,Peptic Ulcer Disease,Erosive lesions in the mucosal lining of stomach or duodenum caused by acid and pepsin,Gastroenterology,PUD;Gastric Ulcer;Duodenal Ulcer
+MED067,Crohn's Disease,Chronic transmural inflammatory bowel disease that may involve any part of digestive tract,Gastroenterology,Regional Enteritis;Inflammatory Bowel Disease;IBD
+MED068,Ulcerative Colitis,Chronic inflammatory condition restricted to mucosa of the colon and rectum,Gastroenterology,UC;Colitis Ulcerosa;IBD
+MED069,Liver Cirrhosis,Late stage hepatic fibrosis with replacement of normal tissue by regenerative nodules,Gastroenterology,Cirrhosis;Hepatic Cirrhosis;End-Stage Liver Disease
+MED070,Cholelithiasis,Presence or formation of gallstones within gallbladder or biliary duct system,Gastroenterology,Gallstones;Biliary Calculi
+MED071,Acute Pancreatitis,Sudden inflammation and enzymatic autodigestion of pancreatic parenchymal tissue,Gastroenterology,Pancreatic Inflammation
+MED072,Celiac Disease,Autoimmune systemic enteropathy triggered by dietary gluten ingestion in genetically susceptible individuals,Gastroenterology,Gluten-Sensitive Enteropathy;Celiac Sprue
+MED073,Irritable Bowel Syndrome,Functional gastrointestinal disorder characterized by abdominal pain and altered bowel habits,Gastroenterology,IBS;Spastic Colon;Nervous Colon
+MED074,Acute Appendicitis,Acute inflammation and obstruction of vermiform appendix requiring surgical resection,Gastroenterology,Appendicitis;Inflamed Appendix
+MED075,Diverticulitis,Inflammation or infection of small outpouches (diverticula) along the colonic wall,Gastroenterology,Colonic Diverticulitis
+MED076,Hepatitis B,Viral infectious inflammatory necrosis of hepatocytes caused by hepatitis B virus,Gastroenterology,Hep B;HBV Infection
+MED077,Non-Alcoholic Fatty Liver Disease,Excessive hepatic lipid accumulation without significant alcohol consumption history,Gastroenterology,NAFLD;Hepatic Steatosis;Fatty Liver
+MED078,Esophageal Varices,Abnormally enlarged sub-mucosal veins in lower esophagus due to portal hypertension,Gastroenterology,Esophageal Venous Dilatations
+MED079,Chronic Kidney Disease,Long-term progressive structural or functional renal impairment with declining GFR,Nephrology,CKD;Chronic Renal Failure;Chronic Renal Disease
+MED080,Acute Kidney Injury,Abrupt rapid decline in renal excretory function occurring over hours to days,Nephrology,AKI;Acute Renal Failure;Acute Tubular Necrosis
+MED081,Nephrolithiasis,Deposition of crystalline mineral concretions within kidney parenchymal and collecting system,Nephrology,Kidney Stones;Renal Calculi;Urolithiasis
+MED082,Glomerulonephritis,Inflammatory disease targeting microscopic filtering units (glomeruli) of kidneys,Nephrology,Glomerular Inflammation;Bright's Disease
+MED083,Nephrotic Syndrome,"Clinical complex of heavy proteinuria, hypoalbuminemia, hyperlipidemia, and peripheral edema",Nephrology,Protein-Losing Nephropathy
+MED084,Polycystic Kidney Disease,Genetic disorder characterized by proliferation of fluid-filled cysts causing renal enlargement,Nephrology,PKD;Polycystic Renal Disease
+MED085,Pyelonephritis,Bacterial ascending infectious inflammation involving kidney parenchyma and renal pelvis,Nephrology,Acute Kidney Infection;Renal Pelvis Infection
+MED086,Uremia,Toxic buildup of nitrogenous metabolic waste products in blood due to kidney failure,Nephrology,Uremic Syndrome;Azotemia
+MED087,Hydronephrosis,Dilation of renal pelvis and calyces secondary to distal urinary outflow obstruction,Nephrology,Distended Kidney;Urinary Obstruction
+MED088,Renal Artery Stenosis,Narrowing of one or both renal arteries causing renovascular hypertension,Nephrology,RAS;Renovascular Stenosis
+MED089,Rheumatoid Arthritis,Systemic chronic autoimmune disease causing symmetric synovial joint inflammation and erosion,Rheumatology,RA;Atrophic Arthritis
+MED090,Osteoarthritis,Degenerative non-inflammatory joint disease characterized by articular cartilage loss and osteophytes,Rheumatology,OA;Degenerative Joint Disease;DJD
+MED091,Osteoporosis,Systemic skeletal disorder characterized by low bone mass and microarchitectural deterioration,Rheumatology,Brittle Bone Disease;Bone Loss
+MED092,Ankylosing Spondylitis,Chronic inflammatory arthritis mainly affecting axial spine and sacroiliac joints,Rheumatology,AS;Bechterew's Disease
+MED093,Gout,Crystal-induced inflammatory arthropathy resulting from monosodium urate precipitation in joints,Rheumatology,Gouty Arthritis;Podagra;Hyperuricemic Arthritis
+MED094,Systemic Lupus Erythematosus,Multisystem autoimmune disorder producing autoantibodies and immune complex deposition,Rheumatology,SLE;Lupus
+MED095,Fibromyalgia,Chronic widespread musculoskeletal pain disorder accompanied by fatigue and sleep disturbance,Rheumatology,FMS;Fibrositis
+MED096,Psoriatic Arthritis,Chronic inflammatory spondyloarthritis occurring in individuals affected with skin psoriasis,Rheumatology,PsA;Psoriatic Arthropathy
+MED097,Sjogren's Syndrome,Chronic autoimmune exocrinopathy leading to dry eyes and dry mouth (keratoconjunctivitis sicca),Rheumatology,Sicca Syndrome;Autoimmune Exocrinopathy
+MED098,Polymyalgia Rheumatica,"Inflammatory condition causing bilateral pain and morning stiffness in neck, shoulders, and hips",Rheumatology,PMR
+MED099,Malignant Neoplasm,Abnormal malignant cellular proliferation capable of tissue invasion and distant metastasis,Oncology,Cancer;Malignancy;Carcinoma
+MED100,Leukemia,Malignant hematopoietic neoplasm characterized by abnormal proliferation of white blood cells,Oncology,Blood Cancer;Leukocythemia
+MED101,Hodgkin's Lymphoma,Malignant lymphatic neoplasm distinguished by Reed-Sternberg cells in lymph nodes,Oncology,Hodgkin's Disease;HD
+MED102,Non-Hodgkin Lymphoma,"Heterogeneous group of lymphoid malignancies originating from B, T, or NK cells",Oncology,NHL;Lymphosarcoma
+MED103,Malignant Melanoma,Aggressive neoplasm of pigment-producing melanocytes predominantly found in cutaneous tissue,Oncology,Melanoma;Cutaneous Melanoma
+MED104,Multiple Myeloma,Hematologic malignancy of monoclonal plasma cells causing osteolytic lesions and marrow failure,Oncology,Plasma Cell Myeloma;Kahler's Disease
+MED105,Glioblastoma Multiforme,Highly aggressive WHO grade IV astrocytic primary brain tumor with poor prognosis,Oncology,GBM;High-Grade Astrocytoma
+MED106,Colorectal Carcinoma,Malignant epithelial tumor arising from mucosal lining of colon or rectum,Oncology,Colon Cancer;Bowel Cancer;CRC
+MED107,Bronchogenic Carcinoma,Malignant epithelial neoplasm originating within bronchial or bronchiolar epithelium,Oncology,Lung Cancer;Pulmonary Carcinoma
+MED108,Breast Carcinoma,Malignant neoplasm arising from epithelial tissue of mammary ducts or lobules,Oncology,Breast Cancer;Mammary Neoplasm
+MED109,Psoriasis,Chronic immune-mediated dermatosis characterized by erythematous plaques with silvery scales,Dermatology,Plaque Psoriasis;Psoriasis Vulgaris
+MED110,Atopic Dermatitis,Chronic pruritic eczematous skin disorder frequently associated with atopic diathesis,Dermatology,Eczema;Atopic Eczema
+MED111,Alopecia Areata,Autoimmune condition targeting hair follicles causing patchy non-scarring hair loss,Dermatology,Patchy Baldness;Spot Baldness
+MED112,Vitiligo,Acquired cutaneous depigmenting condition characterized by loss of functional melanocytes,Dermatology,Hypopigmentation;Leukoderma
+MED113,Urticaria,Vascular reaction of upper dermis producing transient pruritic erythematous wheals,Dermatology,Hives;Nettle Rash
+MED114,Impetigo,Contagious superficial bacterial skin infection typically caused by Staph or Strep,Dermatology,Pyoderma;School Sores
+MED115,Acne Vulgaris,Inflammatory disorder of pilosebaceous units characterized by comedones and pustules,Dermatology,Pimples;Acne
+MED116,Rosacea,"Chronic facial dermatosis characterized by central facial erythema, telangiectasia, and papules",Dermatology,Acne Rosacea
+MED117,Sepsis,Life-threatening organ dysfunction triggered by a dysregulated host response to infection,Infectious Disease,Septicemia;Blood Poisoning;Systemic Inflammatory Response
+MED118,Tuberculosis,Chronic infectious granulomatous disease caused by Mycobacterium tuberculosis,Infectious Disease,TB;Phthisis;Consumption
+MED119,Infectious Mononucleosis,Acute infectious syndrome caused primarily by Epstein-Barr virus with pharyngitis and lymphadenopathy,Infectious Disease,Mono;Glandular Fever;Kissing Disease
+MED120,Lyme Disease,Tick-borne multi-system infection caused by Borrelia burgdorferi spirochete,Infectious Disease,Lyme Borreliosis
+MED121,Malaria,Mosquito-borne parasitic infection caused by Plasmodium species invading red erythrocytes,Infectious Disease,Plasmodium Infection;Ague
+MED122,Iron Deficiency Anemia,Microcytic hypochromic anemia caused by inadequate iron stores for hemoglobin synthesis,Hematology,Microcytic Anemia;Sideropenic Anemia
+MED123,Immune Thrombocytopenia,Autoimmune clearance and destruction of circulating platelets leading to bleeding diathesis,Hematology,ITP;Idiopathic Thrombocytopenic Purpura
+MED124,Hemophilia A,X-linked congenital bleeding disorder caused by functional deficiency of coagulation factor VIII,Hematology,Factor VIII Deficiency;Classic Hemophilia
+MED125,Sickle Cell Anemia,Autosomal recessive hemoglobinopathy caused by HbS mutation producing sickled erythrocytes,Hematology,Sickle Cell Disease;HbS Disease
+MED126,Glaucoma,Optic neuropathy characterized by progressive retinal ganglion cell loss and elevated intraocular pressure,Ophthalmology,Increased Eye Pressure;Ocular Hypertension
+MED127,Cataract,Progressive opacification of the natural crystalline lens of the eye impairing vision,Ophthalmology,Lens Opacity;Cloudy Lens
+MED128,Otitis Media,Infection or inflammation of middle ear cavity behind tympanic membrane,ENT,Middle Ear Infection;Tympanitis
+MED129,Acute Sinusitis,Inflammation and infection of paranasal sinus mucosa lasting less than four weeks,ENT,Rhinosinusitis;Sinus Infection
+MED130,Benign Prostatic Hyperplasia,Non-malignant proliferation of prostate glandular and stromal tissue causing bladder obstruction,Urology,BPH;Enlarged Prostate

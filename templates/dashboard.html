@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | MedSemantic AI{% endblock %}
+{% block header_title %}Analytics & System Overview{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <!-- Stat 1: Total Terms -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon teal">
+                <i class="bi bi-journal-medical"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="stat-total-terms">--</h3>
+                <p>Medical Terms in Index</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 2: Total Comparisons -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="bi bi-arrow-left-right"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="stat-total-comparisons">--</h3>
+                <p>Comparisons Performed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 3: Total Searches -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon purple">
+                <i class="bi bi-search"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="stat-total-queries">--</h3>
+                <p>Semantic Searches</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 4: Average Similarity -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon amber">
+                <i class="bi bi-percent"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="stat-avg-similarity">--%</h3>
+                <p>Avg Match Score</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-4 mb-4">
+    <!-- Chart 1: Category Distribution -->
+    <div class="col-lg-6">
+        <div class="med-card h-100">
+            <div class="med-card-header">
+                <h5><i class="bi bi-pie-chart text-teal me-2"></i>Medical Specialties Distribution</h5>
+                <span class="badge bg-light text-muted border">Indexed Vocabulary</span>
+            </div>
+            <div class="med-card-body">
+                <div style="height: 290px;">
+                    <canvas id="categoryDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart 2: Relationship Distribution -->
+    <div class="col-lg-6">
+        <div class="med-card h-100">
+            <div class="med-card-header">
+                <h5><i class="bi bi-bar-chart-fill text-primary me-2"></i>Semantic Relationship Tiers</h5>
+                <span class="badge bg-light text-muted border">Audit Logs</span>
+            </div>
+            <div class="med-card-body">
+                <div style="height: 290px;">
+                    <canvas id="relationshipDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Row: Recent Comparisons & Popular Queries -->
+<div class="row g-4">
+    <!-- Recent Comparisons -->
+    <div class="col-lg-8">
+        <div class="med-card">
+            <div class="med-card-header">
+                <h5><i class="bi bi-clock-history me-2 text-teal"></i>Recent Term Comparisons</h5>
+                <a href="{{ url_for('history_view') }}" class="btn btn-sm btn-outline-secondary">View All</a>
+            </div>
+            <div class="med-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table med-table">
+                        <thead>
+                            <tr>
+                                <th>Term A</th>
+                                <th>Term B</th>
+                                <th>Score</th>
+                                <th>Relationship</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-comparisons-body">
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                    Loading analytics data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Queries -->
+    <div class="col-lg-4">
+        <div class="med-card">
+            <div class="med-card-header">
+                <h5><i class="bi bi-fire text-danger me-2"></i>Frequent Searches</h5>
+                <span class="badge bg-light text-muted border">Top Terms</span>
+            </div>
+            <div class="med-card-body">
+                <ul class="list-group list-group-flush" id="popular-queries-list">
+                    <li class="list-group-item text-muted text-center py-3">No query history yet.</li>
+                </ul>
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="fw-bold fs-7 text-uppercase text-muted">Quick Try:</h6>
+                    <div class="d-flex flex-wrap gap-1 mt-2">
+                        <a href="{{ url_for('compare_view', term_a='Heart Attack', term_b='Myocardial Infarction') }}" class="example-pill">Heart Attack vs MI</a>
+                        <a href="{{ url_for('compare_view', term_a='Diabetes Mellitus', term_b='High Blood Sugar') }}" class="example-pill">Diabetes vs Glucose</a>
+                        <a href="{{ url_for('compare_view', term_a='Hypertension', term_b='High Blood Pressure') }}" class="example-pill">Hypertension vs HBP</a>
+                        <a href="{{ url_for('search_view', q='Cerebrovascular') }}" class="example-pill">Find "Stroke"</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/dashboard')
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === 'success') {
+                const d = response.data;
+                document.getElementById('stat-total-terms').textContent = d.total_terms;
+                document.getElementById('stat-total-comparisons').textContent = d.total_comparisons;
+                document.getElementById('stat-total-queries').textContent = d.total_queries;
+                document.getElementById('stat-avg-similarity').textContent = (d.avg_similarity_score * 100).toFixed(1) + '%';
+
+                // Render Charts
+                if (d.category_distribution) {
+                    renderCategoryChart('categoryDistributionChart', d.category_distribution);
+                }
+                if (d.relationship_distribution) {
+                    renderRelationshipChart('relationshipDistributionChart', d.relationship_distribution);
+                }
+
+                // Render Recent Comparisons Table
+                const tbody = document.getElementById('recent-comparisons-body');
+                if (d.recent_comparisons && d.recent_comparisons.length > 0) {
+                    tbody.innerHTML = '';
+                    d.recent_comparisons.forEach(item => {
+                        const tr = document.createElement('tr');
+                        const scorePct = (item.similarity_score * 100).toFixed(1) + '%';
+                        let badgeClass = 'badge-secondary';
+                        if (item.relationship.includes('Equivalent')) badgeClass = 'badge-success';
+                        else if (item.relationship.includes('Related')) badgeClass = 'badge-primary';
+                        else if (item.relationship.includes('Moderate')) badgeClass = 'badge-warning';
+
+                        tr.innerHTML = `
+                            <td class="fw-semibold text-dark">${item.term_a}</td>
+                            <td class="fw-semibold text-dark">${item.term_b}</td>
+                            <td><span class="fw-bold">${scorePct}</span></td>
+                            <td><span class="${badgeClass}">${item.relationship}</span></td>
+                            <td>
+                                <a href="/compare?term_a=${encodeURIComponent(item.term_a)}&term_b=${encodeURIComponent(item.term_b)}" class="btn btn-sm btn-light border py-0 px-2" title="Inspect Pair">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No comparisons logged yet. Run a comparison to populate!</td></tr>`;
+                }
+
+                // Render Popular Queries
+                const popList = document.getElementById('popular-queries-list');
+                if (d.popular_queries && d.popular_queries.length > 0) {
+                    popList.innerHTML = '';
+                    d.popular_queries.forEach(pq => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item d-flex justify-content-between align-items-center px-0 py-2';
+                        li.innerHTML = `
+                            <a href="/search?q=${encodeURIComponent(pq.query_term)}" class="text-decoration-none text-dark fw-medium">
+                                <i class="bi bi-search text-muted me-2"></i>${pq.query_term}
+                            </a>
+                            <span class="badge bg-light text-muted border rounded-pill">${pq.count} searches</span>
+                        `;
+                        popList.appendChild(li);
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching dashboard data:', err);
+            showNotification('Failed to load dashboard metrics.', 'error');
+        });
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Model Comparison | MedSemantic AI{% endblock %}
+{% block header_title %}Traditional vs Transformer Models Comparison{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <!-- Input Section -->
+    <div class="col-12">
+        <div class="med-card">
+            <div class="med-card-body p-4">
+                <form id="model-comp-form" class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label for="comp_term_a" class="form-label fw-semibold text-dark">Medical Term A</label>
+                        <input type="text" class="form-control" id="comp_term_a" value="Heart Attack" placeholder="e.g. Heart Attack" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="comp_term_b" class="form-label fw-semibold text-dark">Medical Term B</label>
+                        <input type="text" class="form-control" id="comp_term_b" value="Myocardial Infarction" placeholder="e.g. Myocardial Infarction" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-teal w-100 py-2" id="btn-run-comp">
+                            <i class="bi bi-play-circle-fill me-1"></i> Compare Models
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-3 pt-3 border-top">
+                    <span class="text-muted small fw-semibold me-2">Preset Comparisons:</span>
+                    <button type="button" class="example-pill border-0" onclick="setCompPair('Heart Attack', 'Myocardial Infarction')">Heart Attack ↔ Myocardial Infarction</button>
+                    <button type="button" class="example-pill border-0" onclick="setCompPair('Diabetes Mellitus', 'High Blood Sugar')">Diabetes ↔ High Blood Sugar</button>
+                    <button type="button" class="example-pill border-0" onclick="setCompPair('Hypertension', 'High Blood Pressure')">Hypertension ↔ High Blood Pressure</button>
+                    <button type="button" class="example-pill border-0" onclick="setCompPair('Stroke', 'Cerebrovascular Accident')">Stroke ↔ CVA</button>
+                    <button type="button" class="example-pill border-0" onclick="setCompPair('Asthma', 'Appendicitis')">Asthma ↔ Appendicitis (Control)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comparison Results Section -->
+<div class="row g-4 mb-4">
+    <!-- Visual Comparison Chart -->
+    <div class="col-lg-6">
+        <div class="med-card h-100" style="position: relative;">
+            <div class="med-card-header">
+                <h5><i class="bi bi-bar-chart-steps text-teal me-2"></i>Multi-Model Similarity Score Spread</h5>
+                <span class="badge bg-light text-muted border">0% to 100%</span>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading-overlay" id="comp-spinner" style="display: none;">
+                <div class="spinner-border text-teal mb-2" role="status"></div>
+                <span class="fw-semibold text-dark">Running 5 Similarity Models...</span>
+            </div>
+
+            <div class="med-card-body">
+                <div style="height: 320px;">
+                    <canvas id="modelComparisonBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparative Table -->
+    <div class="col-lg-6">
+        <div class="med-card h-100">
+            <div class="med-card-header">
+                <h5><i class="bi bi-table text-primary me-2"></i>Algorithmic Breakdown</h5>
+                <span class="badge badge-success" id="comp-relationship-badge">Equivalent / Highly Similar</span>
+            </div>
+            <div class="med-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table med-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Paradigm</th>
+                                <th style="width: 100px;">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-table-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Research Commentary and Limitations Analysis -->
+<div class="med-card">
+    <div class="med-card-header">
+        <h5><i class="bi bi-journal-text text-teal me-2"></i>NLP Research Findings & Technical Limitations</h5>
+        <span class="badge bg-light text-muted border">Architectural Discussion</span>
+    </div>
+    <div class="med-card-body">
+        <div class="alert alert-light border p-3 mb-4" id="commentary-box">
+            <h6 class="fw-bold text-dark mb-1"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Contextual Insight</h6>
+            <p class="text-muted mb-0" id="commentary-text">
+                Executing comparison...
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-3 border rounded-3 bg-light h-100">
+                    <h6 class="fw-bold text-teal"><i class="bi bi-check-circle-fill me-2"></i>Why Transformers Outperform Lexical Methods</h6>
+                    <ul class="text-muted small ps-3 mb-0">
+                        <li class="mb-2"><strong>Synonym Invariance:</strong> Dense vectors represent conceptual meaning rather than character sequences, capturing clinical equivalents like <em>"Stroke"</em> and <em>"Cerebrovascular Accident"</em> despite 0% Jaccard overlap.</li>
+                        <li class="mb-2"><strong>Contextual Polysemy:</strong> Understands words with multiple medical vs colloquial meanings depending on context (e.g. <em>"Cold"</em> symptom vs low temperature).</li>
+                        <li><strong>Latent Pathophysiological Associations:</strong> Embedding spaces cluster related organ systems and disease-symptom relationships together (e.g., <em>"Hyperglycemia"</em> and <em>"Diabetes"</em>).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-3 border rounded-3 bg-light h-100">
+                    <h6 class="fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Technical Limitations & Edge Cases</h6>
+                    <ul class="text-muted small ps-3 mb-0">
+                        <li class="mb-2"><strong>Negation Sensitivity:</strong> Standard mean-pooled embeddings may score <em>"Hypertension"</em> and <em>"No hypertension"</em> moderately high due to token co-occurrence unless contrastive negation tuning is applied.</li>
+                        <li class="mb-2"><strong>Subtle Clinical Distinction:</strong> Conditions sharing anatomical location (e.g., <em>"Type 1"</em> vs <em>"Type 2 Diabetes"</em> or <em>"Gastric Ulcer"</em> vs <em>"Duodenal Ulcer"</em>) exhibit high semantic similarity while requiring radically different clinical treatment protocols.</li>
+                        <li><strong>Computational Footprint:</strong> Transformers require matrix multiplications and model weights (hundreds of megabytes), whereas Levenshtein/Jaccard execute in microseconds with zero memory overhead.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setCompPair(a, b) {
+    document.getElementById('comp_term_a').value = a;
+    document.getElementById('comp_term_b').value = b;
+    executeModelComparison();
+}
+
+document.getElementById('model-comp-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    executeModelComparison();
+});
+
+function executeModelComparison() {
+    const termA = document.getElementById('comp_term_a').value.trim();
+    const termB = document.getElementById('comp_term_b').value.trim();
+
+    if (!termA || !termB) {
+        showNotification('Please enter both medical terms.', 'error');
+        return;
+    }
+
+    const spinner = document.getElementById('comp-spinner');
+    spinner.style.display = 'flex';
+
+    fetch('/api/model-comparison', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ term_a: termA, term_b: termB })
+    })
+    .then(res => res.json())
+    .then(response => {
+        spinner.style.display = 'none';
+        if (response.status === 'success') {
+            renderComparisonResults(response);
+        } else {
+            showNotification(response.message || 'Comparison failed', 'error');
+        }
+    })
+    .catch(err => {
+        spinner.style.display = 'none';
+        console.error('Model comparison error:', err);
+        showNotification('Server error while evaluating models.', 'error');
+    });
+}
+
+function renderComparisonResults(data) {
+    // Update relationship badge
+    const badge = document.getElementById('comp-relationship-badge');
+    badge.textContent = data.relationship;
+    badge.className = `badge ${data.badge_class}`;
+
+    // Render Table
+    const tbody = document.getElementById('comparison-table-body');
+    tbody.innerHTML = '';
+    data.comparison_table.forEach(item => {
+        const tr = document.createElement('tr');
+        const isTransformer = item.method_type.includes('Transformer');
+        const badgeStyle = isTransformer ? 'bg-teal-subtle text-teal border border-teal-subtle' : 'bg-light text-muted border';
+
+        tr.innerHTML = `
+            <td>
+                <div class="fw-bold ${isTransformer ? 'text-teal' : 'text-dark'}">${item.method_name}</div>
+                <small class="text-muted d-block text-truncate" style="max-width: 260px;" title="${item.mechanism}">${item.mechanism}</small>
+            </td>
+            <td><span class="badge ${badgeStyle}">${item.method_type}</span></td>
+            <td><span class="fw-bold fs-6 ${isTransformer ? 'text-teal' : 'text-dark'}">${item.score_display}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Render Chart
+    renderModelComparisonChart('modelComparisonBarChart', data.comparison_table);
+
+    // Update Commentary
+    document.getElementById('commentary-text').textContent = data.research_commentary;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    executeModelComparison();
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset Management | MedSemantic AI{% endblock %}
+{% block header_title %}Medical Terminology Dataset Manager{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <!-- Top Action Cards -->
+    <div class="col-lg-6">
+        <div class="med-card h-100">
+            <div class="med-card-header">
+                <h5><i class="bi bi-file-earmark-arrow-up text-teal me-2"></i>Upload Terminology CSV</h5>
+                <span class="badge bg-light text-muted border">Automatic Vector Indexing</span>
+            </div>
+            <div class="med-card-body">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csv-file-input" class="form-label text-muted small">Select a CSV file with columns: <code>term_id, medical_term, description, category, synonyms</code></label>
+                        <input class="form-control" type="file" id="csv-file-input" accept=".csv" required>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Removes duplicates & rebuilds FAISS</small>
+                        <button type="submit" class="btn btn-teal" id="upload-btn">
+                            <i class="bi bi-cloud-upload me-1"></i> Upload & Rebuild Index
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="med-card h-100">
+            <div class="med-card-header">
+                <h5><i class="bi bi-plus-circle text-teal me-2"></i>Add New Medical Term</h5>
+                <span class="badge bg-light text-muted border">Instant Embedding</span>
+            </div>
+            <div class="med-card-body">
+                <button type="button" class="btn btn-teal mb-3" data-bs-toggle="modal" data-bs-target="#addTermModal">
+                    <i class="bi bi-plus-lg me-1"></i> Add Individual Term Record
+                </button>
+                <div class="p-3 bg-light rounded-3">
+                    <h6 class="fw-bold fs-7 text-uppercase text-muted mb-1">Dataset Summary</h6>
+                    <div class="d-flex gap-4">
+                        <div>
+                            <span class="fs-4 fw-bold text-dark d-block" id="summary-total-terms">--</span>
+                            <small class="text-muted">Total Terms</small>
+                        </div>
+                        <div>
+                            <span class="fs-4 fw-bold text-teal d-block" id="summary-total-categories">--</span>
+                            <small class="text-muted">Specialties</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terminology Table Card -->
+<div class="med-card">
+    <div class="med-card-header flex-wrap gap-2">
+        <h5><i class="bi bi-table text-teal me-2"></i>Medical Vocabulary Records</h5>
+        
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" class="form-control form-control-sm" id="dataset-search" placeholder="Search term, desc, syn..." style="width: 200px;">
+            <select class="form-select form-select-sm" id="dataset-category-filter" style="width: 160px;">
+                <option value="all">All Categories</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="med-card-body p-0 position-relative" style="min-height: 350px;">
+        <!-- Loading spinner -->
+        <div class="loading-overlay" id="dataset-spinner" style="display: none;">
+            <div class="spinner-border text-teal mb-2" role="status"></div>
+            <span class="fw-semibold text-dark">Loading Dataset Records...</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table med-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 90px;">Term ID</th>
+                        <th>Medical Term</th>
+                        <th>Specialty</th>
+                        <th>Description</th>
+                        <th>Synonyms</th>
+                        <th style="width: 80px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="terms-table-body">
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">Loading medical terms...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center p-3 border-top">
+            <div class="text-muted small">
+                Showing page <span id="current-page-num" class="fw-bold">1</span> of <span id="total-pages-num" class="fw-bold">1</span> (<span id="total-records-count">0</span> records)
+            </div>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-secondary" id="btn-prev-page" disabled>
+                    <i class="bi bi-chevron-left"></i> Previous
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="btn-next-page">
+                    Next <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Term Modal -->
+<div class="modal fade" id="addTermModal" tabindex="-1" aria-labelledby="addTermModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTermModalLabel"><i class="bi bi-plus-circle text-teal me-2"></i>Add Medical Terminology</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="add-term-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="new_medical_term" class="form-label fw-semibold">Medical Term Name *</label>
+                        <input type="text" class="form-control" id="new_medical_term" placeholder="e.g. Cardiomegaly" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="new_category" class="form-label fw-semibold">Medical Category / Specialty *</label>
+                        <input type="text" class="form-control" id="new_category" placeholder="e.g. Cardiology" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="new_description" class="form-label fw-semibold">Clinical Description *</label>
+                        <textarea class="form-control" id="new_description" rows="3" placeholder="Pathophysiological description..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="new_synonyms" class="form-label fw-semibold">Synonyms / Common Names (semicolon-separated)</label>
+                        <input type="text" class="form-control" id="new_synonyms" placeholder="Enlarged Heart; Hypertrophic Cardiopathy">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-teal" id="save-term-btn">
+                        <i class="bi bi-check-lg me-1"></i> Save & Rebuild Index
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPage = 1;
+const perPage = 15;
+let totalPages = 1;
+
+function fetchTerms(page = 1) {
+    currentPage = page;
+    const search = document.getElementById('dataset-search').value.trim();
+    const category = document.getElementById('dataset-category-filter').value;
+    const spinner = document.getElementById('dataset-spinner');
+    spinner.style.display = 'flex';
+
+    fetch(`/api/dataset/terms?search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}&page=${currentPage}&per_page=${perPage}`)
+        .then(res => res.json())
+        .then(response => {
+            spinner.style.display = 'none';
+            if (response.status === 'success') {
+                const data = response.data;
+                totalPages = data.pages;
+                document.getElementById('current-page-num').textContent = data.page;
+                document.getElementById('total-pages-num').textContent = data.pages;
+                document.getElementById('total-records-count').textContent = data.total;
+                document.getElementById('summary-total-terms').textContent = data.total;
+                document.getElementById('summary-total-categories').textContent = data.categories.length;
+
+                // Populate category filter if empty
+                const catSelect = document.getElementById('dataset-category-filter');
+                if (catSelect.options.length <= 1) {
+                    data.categories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat;
+                        opt.textContent = cat;
+                        catSelect.appendChild(opt);
+                    });
+                }
+
+                // Render rows
+                const tbody = document.getElementById('terms-table-body');
+                tbody.innerHTML = '';
+                if (data.terms.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No terminology records found matching criteria.</td></tr>`;
+                } else {
+                    data.terms.forEach(term => {
+                        const tr = document.createElement('tr');
+                        const synPills = term.synonyms ? term.synonyms.split(';').map(s => `<span class="badge bg-light text-dark border me-1">${s.trim()}</span>`).join('') : '<span class="text-muted small">-</span>';
+                        
+                        tr.innerHTML = `
+                            <td><span class="badge bg-light text-dark border font-monospace">${term.term_id}</span></td>
+                            <td class="fw-bold text-dark">${term.medical_term}</td>
+                            <td><span class="badge bg-teal-subtle text-teal border border-teal-subtle">${term.category}</span></td>
+                            <td><small class="text-muted text-truncate d-inline-block" style="max-width: 320px;" title="${term.description}">${term.description}</small></td>
+                            <td><div class="d-flex flex-wrap">${synPills}</div></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="deleteTerm('${term.term_id}')" title="Delete Term">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Update pagination buttons
+                document.getElementById('btn-prev-page').disabled = (currentPage <= 1);
+                document.getElementById('btn-next-page').disabled = (currentPage >= totalPages);
+            }
+        })
+        .catch(err => {
+            spinner.style.display = 'none';
+            console.error('Error fetching terms:', err);
+            showNotification('Failed to fetch dataset records.', 'error');
+        });
+}
+
+function deleteTerm(termId) {
+    if (!confirm(`Are you sure you want to delete term ${termId}? The FAISS index will be updated automatically.`)) return;
+
+    fetch(`/api/dataset/${encodeURIComponent(termId)}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === 'success') {
+                showNotification(response.message, 'success');
+                fetchTerms(currentPage);
+            } else {
+                showNotification(response.message || 'Deletion failed', 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Error deleting term:', err);
+            showNotification('Server error while deleting term.', 'error');
+        });
+}
+
+// Add Term Form Submission
+document.getElementById('add-term-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const term = document.getElementById('new_medical_term').value.trim();
+    const desc = document.getElementById('new_description').value.trim();
+    const cat = document.getElementById('new_category').value.trim();
+    const syn = document.getElementById('new_synonyms').value.trim();
+
+    fetch('/api/dataset/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ medical_term: term, description: desc, category: cat, synonyms: syn })
+    })
+    .then(res => res.json())
+    .then(response => {
+        if (response.status === 'success') {
+            showNotification(response.message, 'success');
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addTermModal'));
+            if (modal) modal.hide();
+            document.getElementById('add-term-form').reset();
+            fetchTerms(1);
+        } else {
+            showNotification(response.message || 'Failed to add term.', 'error');
+        }
+    })
+    .catch(err => {
+        console.error('Error adding term:', err);
+        showNotification('Server error while adding term.', 'error');
+    });
+});
+
+// Upload CSV Form Submission
+document.getElementById('upload-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fileInput = document.getElementById('csv-file-input');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        showNotification('Please choose a CSV file.', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    const uploadBtn = document.getElementById('upload-btn');
+    uploadBtn.disabled = true;
+    uploadBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing...';
+
+    fetch('/api/dataset/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(response => {
+        uploadBtn.disabled = false;
+        uploadBtn.innerHTML = '<i class="bi bi-cloud-upload me-1"></i> Upload & Rebuild Index';
+        if (response.status === 'success') {
+            showNotification(`${response.message} (${response.stats.total_records} terms indexed)`, 'success');
+            fileInput.value = '';
+            fetchTerms(1);
+        } else {
+            showNotification(response.message || 'Upload failed.', 'error');
+        }
+    })
+    .catch(err => {
+        uploadBtn.disabled = false;
+        uploadBtn.innerHTML = '<i class="bi bi-cloud-upload me-1"></i> Upload & Rebuild Index';
+        console.error('Upload error:', err);
+        showNotification('Server error while uploading dataset.', 'error');
+    });
+});
+
+// Event Listeners for Filters
+document.getElementById('dataset-search').addEventListener('input', () => fetchTerms(1));
+document.getElementById('dataset-category-filter').addEventListener('change', () => fetchTerms(1));
+document.getElementById('btn-prev-page').addEventListener('click', () => { if (currentPage > 1) fetchTerms(currentPage - 1); });
+document.getElementById('btn-next-page').addEventListener('click', () => { if (currentPage < totalPages) fetchTerms(currentPage + 1); });
+
+document.addEventListener('DOMContentLoaded', () => fetchTerms(1));
+</script>
+{% endblock %}
+

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Search History | MedSemantic AI{% endblock %}
+{% block header_title %}Clinical Comparison Audit Log{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="med-card">
+            <div class="med-card-body p-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control" id="history-search-input" placeholder="Search terms, relationship, or model...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="history-model-filter">
+                            <option value="all" selected>All Models</option>
+                            <option value="Sentence-BERT + BioBERT">Sentence-BERT + BioBERT</option>
+                            <option value="Sentence-BERT">Sentence-BERT</option>
+                            <option value="BioBERT">BioBERT</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 text-md-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm" id="btn-clear-history">
+                            <i class="bi bi-trash3 me-1"></i> Clear All History
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History Table Card -->
+<div class="med-card position-relative" style="min-height: 400px;">
+    <div class="med-card-header">
+        <h5><i class="bi bi-clock-history text-teal me-2"></i>Logged Comparisons</h5>
+        <span class="badge bg-light text-muted border" id="history-count-badge">0 Records</span>
+    </div>
+
+    <!-- Spinner -->
+    <div class="loading-overlay" id="history-spinner" style="display: none;">
+        <div class="spinner-border text-teal mb-2" role="status"></div>
+        <span class="fw-semibold text-dark">Loading History Records...</span>
+    </div>
+
+    <div class="med-card-body p-0">
+        <div class="table-responsive">
+            <table class="table med-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th>Medical Term A</th>
+                        <th>Medical Term B</th>
+                        <th>Similarity Score</th>
+                        <th>Relationship Classification</th>
+                        <th>Model Used</th>
+                        <th>Logged At (UTC)</th>
+                        <th style="width: 100px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table-body">
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">Loading audit log...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function fetchHistory() {
+    const search = document.getElementById('history-search-input').value.trim();
+    const model = document.getElementById('history-model-filter').value;
+    const spinner = document.getElementById('history-spinner');
+    spinner.style.display = 'flex';
+
+    fetch(`/api/history?search=${encodeURIComponent(search)}&model=${encodeURIComponent(model)}`)
+        .then(res => res.json())
+        .then(response => {
+            spinner.style.display = 'none';
+            if (response.status === 'success') {
+                renderHistoryTable(response.data);
+            } else {
+                showNotification(response.message || 'Failed to fetch history', 'error');
+            }
+        })
+        .catch(err => {
+            spinner.style.display = 'none';
+            console.error('History fetch error:', err);
+            showNotification('Error loading comparison history.', 'error');
+        });
+}
+
+function renderHistoryTable(items) {
+    const tbody = document.getElementById('history-table-body');
+    const badge = document.getElementById('history-count-badge');
+    badge.textContent = `${items.length} Records`;
+
+    tbody.innerHTML = '';
+    if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted">No comparison history records found.</td></tr>`;
+        return;
+    }
+
+    items.forEach(item => {
+        const tr = document.createElement('tr');
+        const scorePct = (item.similarity_score * 100).toFixed(1) + '%';
+        let badgeClass = 'badge-secondary';
+        if (item.relationship.includes('Equivalent')) badgeClass = 'badge-success';
+        else if (item.relationship.includes('Related')) badgeClass = 'badge-primary';
+        else if (item.relationship.includes('Moderate')) badgeClass = 'badge-warning';
+
+        tr.innerHTML = `
+            <td class="text-muted small">#${item.id}</td>
+            <td class="fw-bold text-dark">${item.term_a}</td>
+            <td class="fw-bold text-dark">${item.term_b}</td>
+            <td><span class="fw-bold fs-6">${scorePct}</span> <small class="text-muted">(${item.similarity_score.toFixed(4)})</small></td>
+            <td><span class="${badgeClass}">${item.relationship}</span></td>
+            <td><span class="badge bg-light text-muted border">${item.model_name}</span></td>
+            <td class="text-muted small">${item.created_at}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <a href="/compare?term_a=${encodeURIComponent(item.term_a)}&term_b=${encodeURIComponent(item.term_b)}" class="btn btn-outline-teal" title="Re-compare">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteHistory(${item.id})" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function deleteHistory(id) {
+    if (!confirm(`Delete history log #${id}?`)) return;
+
+    fetch(`/api/history/${id}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === 'success') {
+                showNotification(response.message, 'success');
+                fetchHistory();
+            } else {
+                showNotification(response.message || 'Delete failed', 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Delete error:', err);
+            showNotification('Server error while deleting record.', 'error');
+        });
+}
+
+document.getElementById('btn-clear-history').addEventListener('click', () => {
+    if (!confirm('Are you sure you want to clear ALL search and comparison history? This cannot be undone.')) return;
+
+    fetch('/api/history/clear', { method: 'POST' })
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === 'success') {
+                showNotification(response.message, 'success');
+                fetchHistory();
+            } else {
+                showNotification(response.message || 'Clear failed', 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Clear error:', err);
+            showNotification('Server error while clearing history.', 'error');
+        });
+});
+
+document.getElementById('history-search-input').addEventListener('input', fetchHistory);
+document.getElementById('history-model-filter').addEventListener('change', fetchHistory);
+
+document.addEventListener('DOMContentLoaded', fetchHistory);
+</script>
+{% endblock %}
+

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Terminology Search | MedSemantic AI{% endblock %}
+{% block header_title %}Automated FAISS Semantic Search{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Search Controls Card -->
+    <div class="col-12">
+        <div class="med-card">
+            <div class="med-card-body p-4">
+                <form id="search-form" class="row g-3 align-items-center">
+                    <div class="col-lg-6 col-md-5">
+                        <label for="search-query" class="form-label fw-semibold text-dark">Search Medical Term or Description</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search text-teal"></i></span>
+                            <input type="text" class="form-control" id="search-query" value="{{ initial_query }}" placeholder="e.g. Heart Attack, Blood Clot, Brain Stroke, High Sugar..." required>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4">
+                        <label for="category-filter" class="form-label fw-semibold text-dark">Medical Specialty</label>
+                        <select class="form-select" id="category-filter">
+                            <option value="all" selected>All Categories</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Endocrinology">Endocrinology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Pulmonology">Pulmonology</option>
+                            <option value="Gastroenterology">Gastroenterology</option>
+                            <option value="Nephrology">Nephrology</option>
+                            <option value="Rheumatology">Rheumatology</option>
+                            <option value="Oncology">Oncology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Infectious Disease">Infectious Disease</option>
+                            <option value="Hematology">Hematology</option>
+                            <option value="Ophthalmology">Ophthalmology</option>
+                            <option value="ENT">ENT</option>
+                            <option value="Urology">Urology</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-1 col-md-3">
+                        <label for="top-k-select" class="form-label fw-semibold text-dark">Top K</label>
+                        <select class="form-select" id="top-k-select">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 col-12 d-flex align-items-end">
+                        <button type="submit" class="btn btn-teal w-100 py-2" id="search-btn">
+                            <i class="bi bi-search me-1"></i> Retrieve
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Suggested Quick Search Chips -->
+                <div class="mt-3 pt-3 border-top">
+                    <span class="text-muted small fw-semibold me-2">Sample Lay Inquiries:</span>
+                    <button type="button" class="example-pill border-0" onclick="triggerSearch('Heart Attack')">Heart Attack</button>
+                    <button type="button" class="example-pill border-0" onclick="triggerSearch('High Blood Sugar')">High Blood Sugar</button>
+                    <button type="button" class="example-pill border-0" onclick="triggerSearch('Mini Stroke')">Mini Stroke</button>
+                    <button type="button" class="example-pill border-0" onclick="triggerSearch('Hardening of the arteries')">Artery Hardening</button>
+                    <button type="button" class="example-pill border-0" onclick="triggerSearch('Acid reflux esophagitis')">Acid Reflux</button>
+                    <button type="button" class="example-pill border-0" onclick="triggerSearch('Fluid in lungs')">Fluid in Lungs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results Container -->
+    <div class="col-12">
+        <div class="med-card" style="min-height: 400px; position: relative;">
+            <div class="med-card-header">
+                <h5><i class="bi bi-list-check text-teal me-2"></i>Semantic Matching Results</h5>
+                <span class="badge bg-light text-muted border" id="results-count-badge">0 Matches</span>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading-overlay" id="search-spinner" style="display: none;">
+                <div class="spinner-border text-teal mb-2" role="status"></div>
+                <span class="fw-semibold text-dark">Searching FAISS Vector Index...</span>
+            </div>
+
+            <div class="med-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table med-table mb-0" id="results-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Rank</th>
+                                <th>Canonical Medical Term</th>
+                                <th>Specialty</th>
+                                <th style="width: 220px;">Semantic Similarity</th>
+                                <th>Relationship</th>
+                                <th>Clinical Synonyms</th>
+                                <th style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-search display-5 d-block mb-2 text-muted opacity-50"></i>
+                                    Enter a clinical or lay query above to retrieve semantically related medical terminology.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function triggerSearch(q) {
+    document.getElementById('search-query').value = q;
+    executeSearch();
+}
+
+document.getElementById('search-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    executeSearch();
+});
+
+function executeSearch() {
+    const query = document.getElementById('search-query').value.trim();
+    const category = document.getElementById('category-filter').value;
+    const topK = document.getElementById('top-k-select').value;
+
+    if (!query) {
+        showNotification('Please enter a query string.', 'error');
+        return;
+    }
+
+    const spinner = document.getElementById('search-spinner');
+    spinner.style.display = 'flex';
+
+    fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query, category: category, top_k: parseInt(topK) })
+    })
+    .then(res => res.json())
+    .then(response => {
+        spinner.style.display = 'none';
+        if (response.status === 'success') {
+            displaySearchResults(response.results, response.query);
+        } else {
+            showNotification(response.message || 'Search failed', 'error');
+        }
+    })
+    .catch(err => {
+        spinner.style.display = 'none';
+        console.error('Search error:', err);
+        showNotification('Failed to query FAISS vector index.', 'error');
+    });
+}
+
+function displaySearchResults(results, query) {
+    const tbody = document.getElementById('results-body');
+    const badge = document.getElementById('results-count-badge');
+    badge.textContent = `${results.length} Matches Found`;
+
+    if (results.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    No matching medical terms found for "${query}". Try adjusting category filter or phrase.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    results.forEach(r => {
+        const tr = document.createElement('tr');
+        const pct = r.similarity_percentage;
+        let barColor = 'bg-success';
+        if (pct < 80 && pct >= 60) barColor = 'bg-primary';
+        else if (pct < 60 && pct >= 40) barColor = 'bg-warning';
+        else if (pct < 40) barColor = 'bg-danger';
+
+        const synPills = r.synonyms ? r.synonyms.split(';').map(s => `<span class="badge bg-light text-dark border me-1 mb-1">${s.trim()}</span>`).join('') : '<span class="text-muted small">None listed</span>';
+
+        tr.innerHTML = `
+            <td class="text-center fw-bold text-muted">${r.rank}</td>
+            <td>
+                <div class="fw-bold text-dark">${r.medical_term}</div>
+                <small class="text-muted text-truncate d-inline-block" style="max-width: 320px;" title="${r.description}">${r.description}</small>
+            </td>
+            <td><span class="badge bg-teal-subtle text-teal border border-teal-subtle">${r.category}</span></td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar ${barColor}" role="progressbar" style="width: ${pct}%"></div>
+                    </div>
+                    <span class="fw-bold small" style="min-width: 48px;">${pct}%</span>
+                </div>
+                <small class="text-muted">Cosine: ${r.similarity_score.toFixed(4)}</small>
+            </td>
+            <td><span class="${r.badge_class}">${r.relationship}</span></td>
+            <td><div class="d-flex flex-wrap">${synPills}</div></td>
+            <td>
+                <a href="/compare?term_a=${encodeURIComponent(query)}&term_b=${encodeURIComponent(r.medical_term)}" class="btn btn-sm btn-outline-teal" title="Compare with query">
+                    <i class="bi bi-arrow-left-right me-1"></i> Compare
+                </a>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const q = document.getElementById('search-query').value.trim();
+    if (q) {
+        executeSearch();
+    }
+});
+</script>
+{% endblock %}
+

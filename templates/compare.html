@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Compare Medical Terms | MedSemantic AI{% endblock %}
+{% block header_title %}Single Medical Term Comparison{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Left Column: Input Form & Quick Examples -->
+    <div class="col-lg-5">
+        <div class="med-card mb-4">
+            <div class="med-card-header">
+                <h5><i class="bi bi-input-cursor-text text-teal me-2"></i>Enter Medical Terms</h5>
+                <span class="badge bg-light text-muted border">Dual Transformer</span>
+            </div>
+            <div class="med-card-body">
+                <form id="compare-form">
+                    <div class="mb-3">
+                        <label for="term_a" class="form-label fw-semibold text-dark">Medical Term / Sentence A</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" class="form-control" id="term_a" name="term_a" value="{{ term_a }}" placeholder="e.g. Heart Attack" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="term_b" class="form-label fw-semibold text-dark">Medical Term / Sentence B</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="bi bi-fonts"></i></span>
+                            <input type="text" class="form-control" id="term_b" name="term_b" value="{{ term_b }}" placeholder="e.g. Myocardial Infarction" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-teal py-2" id="btn-compare">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> Calculate Semantic Similarity
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 pt-3 border-top">
+                    <label class="form-label fw-semibold text-muted small text-uppercase">Benchmark Test Pairs:</label>
+                    <div class="d-flex flex-wrap gap-1">
+                        <button type="button" class="example-pill border-0" onclick="setPair('Heart Attack', 'Myocardial Infarction')">
+                            Heart Attack ↔ Myocardial Infarction
+                        </button>
+                        <button type="button" class="example-pill border-0" onclick="setPair('Diabetes Mellitus', 'High Blood Sugar')">
+                            Diabetes ↔ High Blood Sugar
+                        </button>
+                        <button type="button" class="example-pill border-0" onclick="setPair('Hypertension', 'High Blood Pressure')">
+                            Hypertension ↔ High Blood Pressure
+                        </button>
+                        <button type="button" class="example-pill border-0" onclick="setPair('Stroke', 'Cerebrovascular Accident')">
+                            Stroke ↔ CVA
+                        </button>
+                        <button type="button" class="example-pill border-0" onclick="setPair('Kidney Stones', 'Nephrolithiasis')">
+                            Kidney Stones ↔ Nephrolithiasis
+                        </button>
+                        <button type="button" class="example-pill border-0" onclick="setPair('Asthma', 'Appendicitis')">
+                            Asthma ↔ Appendicitis (Unrelated)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Note -->
+        <div class="med-card bg-light border-0">
+            <div class="med-card-body p-3">
+                <h6 class="fw-bold text-dark"><i class="bi bi-shield-check text-teal me-2"></i>Semantic vs Lexical AI</h6>
+                <p class="text-muted small mb-0">
+                    Traditional keyword tools look for identical letter sequences. Transformer models (Sentence-BERT & BioBERT) understand semantic medical meaning: identifying that <em>"Heart Attack"</em> and <em>"Myocardial Infarction"</em> denote the same clinical pathology despite sharing zero overlapping words.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Interactive Results & Circular Progress Indicator -->
+    <div class="col-lg-7">
+        <div class="med-card" id="results-card" style="min-height: 480px; position: relative;">
+            <div class="med-card-header">
+                <h5><i class="bi bi-cpu text-teal me-2"></i>Similarity Results & Clinical Classification</h5>
+                <span class="badge bg-light text-muted border" id="result-status-badge">Awaiting Input</span>
+            </div>
+
+            <!-- Loading Spinner Overlay -->
+            <div class="loading-overlay" id="loading-spinner" style="display: none;">
+                <div class="spinner-border text-teal mb-2" style="width: 3rem; height: 3rem;" role="status"></div>
+                <span class="fw-semibold text-dark">Computing Dense Transformer Embeddings...</span>
+                <small class="text-muted">Calculating cosine similarity across vector spaces</small>
+            </div>
+
+            <div class="med-card-body" id="results-content">
+                <!-- Placeholder when no comparison made yet -->
+                <div class="text-center py-5 text-muted" id="placeholder-view">
+                    <i class="bi bi-arrow-left-right text-teal opacity-50 display-3 d-block mb-3"></i>
+                    <h5 class="fw-bold text-dark">Ready for Comparison</h5>
+                    <p class="text-muted" style="max-width: 400px; margin: 0 auto;">
+                        Select one of the benchmark example pairs or enter two medical phrases on the left to inspect semantic proximity scores.
+                    </p>
+                </div>
+
+                <!-- Active Results View (Hidden Initially) -->
+                <div id="active-results" style="display: none;">
+                    <!-- Circular Score Gauge & Relationship Badge -->
+                    <div class="text-center mb-4">
+                        <div class="gauge-container mb-2" id="circular-gauge">
+                            <svg class="gauge-svg" viewBox="0 0 160 160">
+                                <circle class="gauge-bg" cx="80" cy="80" r="70"></circle>
+                                <circle class="gauge-progress" cx="80" cy="80" r="70"></circle>
+                            </svg>
+                            <div class="gauge-text">
+                                <div class="gauge-percentage">0%</div>
+                                <div class="gauge-label">Cosine Similarity</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <span class="badge badge-success fs-6 px-4 py-2" id="relationship-badge">
+                                Equivalent / Highly Similar
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Dual Model Breakdown Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted small fw-semibold">Sentence-BERT</span>
+                                    <span class="badge bg-teal-subtle text-teal border border-teal-subtle">all-MiniLM-L6-v2</span>
+                                </div>
+                                <h4 class="mb-0 fw-bold text-dark" id="sbert-score-val">0.00</h4>
+                                <small class="text-muted">Dense Siamese Semantic Projection</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted small fw-semibold">BioBERT</span>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">PubMed Mean-Pooled</span>
+                                </div>
+                                <h4 class="mb-0 fw-bold text-dark" id="biobert-score-val">0.00</h4>
+                                <small class="text-muted">Biomedical Literature Contextual</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Explanation -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-chat-left-text text-teal me-2"></i>Analysis & Explanation</h6>
+                        <p class="text-dark mb-2" id="clinical-summary-text"></p>
+                        <p class="text-muted small mb-0" id="nlp-insight-text"></p>
+                    </div>
+
+                    <!-- Clinical Caution Alert Box -->
+                    <div class="clinical-caution-box" id="clinical-caution-box">
+                        <div class="d-flex align-items-start gap-2">
+                            <i class="bi bi-exclamation-triangle-fill fs-5 mt-1"></i>
+                            <div>
+                                <strong class="d-block mb-1">Clinical Safety Notice</strong>
+                                <span id="clinical-caution-text"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Traditional Algorithms Breakdown Accordion -->
+                    <div class="accordion mt-4" id="traditionalAccordion">
+                        <div class="accordion-item border rounded-3">
+                            <h2 class="accordion-header" id="headingTrad">
+                                <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTrad" aria-expanded="false" aria-controls="collapseTrad">
+                                    <i class="bi bi-bar-chart text-muted me-2"></i> View Traditional Lexical Similarity Metrics
+                                </button>
+                            </h2>
+                            <div id="collapseTrad" class="accordion-collapse collapse" aria-labelledby="headingTrad" data-bs-parent="#traditionalAccordion">
+                                <div class="accordion-body p-0">
+                                    <table class="table med-table table-sm mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Algorithm</th>
+                                                <th>Score</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="traditional-metrics-body">
+                                            <!-- Injected dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setPair(a, b) {
+    document.getElementById('term_a').value = a;
+    document.getElementById('term_b').value = b;
+    executeComparison();
+}
+
+document.getElementById('compare-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    executeComparison();
+});
+
+function executeComparison() {
+    const termA = document.getElementById('term_a').value.trim();
+    const termB = document.getElementById('term_b').value.trim();
+
+    if (!termA || !termB) {
+        showNotification('Please enter both medical terms.', 'error');
+        return;
+    }
+
+    const spinner = document.getElementById('loading-spinner');
+    spinner.style.display = 'flex';
+
+    fetch('/api/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ term_a: termA, term_b: termB })
+    })
+    .then(res => res.json())
+    .then(response => {
+        spinner.style.display = 'none';
+        if (response.status === 'success') {
+            const data = response.data;
+            displayResults(data);
+        } else {
+            showNotification(response.message || 'Comparison failed', 'error');
+        }
+    })
+    .catch(err => {
+        spinner.style.display = 'none';
+        console.error('Comparison error:', err);
+        showNotification('Network or server error while running comparison.', 'error');
+    });
+}
+
+function displayResults(data) {
+    document.getElementById('placeholder-view').style.display = 'none';
+    document.getElementById('active-results').style.display = 'block';
+
+    // Update Circular Gauge
+    updateScoreGauge(data.similarity_score);
+
+    // Update Relationship Badge
+    const badge = document.getElementById('relationship-badge');
+    badge.textContent = data.relationship;
+    badge.className = `badge ${data.badge_class} fs-6 px-4 py-2`;
+
+    // Status badge in card header
+    document.getElementById('result-status-badge').textContent = `${data.percentage}% Match`;
+
+    // Update Model Breakdown
+    document.getElementById('sbert-score-val').textContent = data.sbert_score.toFixed(4);
+    if (data.biobert_score !== null && data.biobert_score !== undefined) {
+        document.getElementById('biobert-score-val').textContent = data.biobert_score.toFixed(4);
+    } else {
+        document.getElementById('biobert-score-val').textContent = 'N/A';
+    }
+
+    // Explanations & Caution
+    document.getElementById('clinical-summary-text').textContent = data.clinical_summary;
+    document.getElementById('nlp-insight-text').textContent = data.nlp_insight || '';
+    document.getElementById('clinical-caution-text').textContent = data.clinical_caution;
+
+    // Traditional Metrics
+    const tradBody = document.getElementById('traditional-metrics-body');
+    const trad = data.traditional_metrics;
+    tradBody.innerHTML = `
+        <tr>
+            <td class="fw-semibold">TF-IDF + Cosine</td>
+            <td>${(trad.tfidf_cosine * 100).toFixed(1)}%</td>
+            <td class="text-muted small">Character n-gram subword vector overlap</td>
+        </tr>
+        <tr>
+            <td class="fw-semibold">Jaccard Similarity</td>
+            <td>${(trad.jaccard_word * 100).toFixed(1)}%</td>
+            <td class="text-muted small">Word token intersection over union</td>
+        </tr>
+        <tr>
+            <td class="fw-semibold">Levenshtein Similarity</td>
+            <td>${(trad.levenshtein_similarity * 100).toFixed(1)}%</td>
+            <td class="text-muted small">Edit distance: ${trad.levenshtein_distance} character edits</td>
+        </tr>
+    `;
+}
+
+// Auto-run if URL query parameters passed
+document.addEventListener('DOMContentLoaded', () => {
+    const tA = document.getElementById('term_a').value.trim();
+    const tB = document.getElementById('term_b').value.trim();
+    if (tA && tB) {
+        executeComparison();
+    }
+});
+</script>
+{% endblock %}
+

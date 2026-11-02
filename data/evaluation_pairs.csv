@@ -1,0 +1,62 @@
+pair_id,term_a,term_b,category,ground_truth_label,ground_truth_binary,split
+EVAL001,Heart Attack,Myocardial Infarction,Cardiology,EQUIVALENT,1,test
+EVAL002,High Blood Pressure,Hypertension,Cardiology,EQUIVALENT,1,test
+EVAL003,Chest Pain,Angina Pectoris,Cardiology,EQUIVALENT,1,val
+EVAL004,Irregular Heartbeat,Cardiac Arrhythmia,Cardiology,EQUIVALENT,1,train
+EVAL005,Hardening of the Arteries,Atherosclerosis,Cardiology,EQUIVALENT,1,test
+EVAL006,Slow Heart Rate,Bradycardia,Cardiology,EQUIVALENT,1,train
+EVAL007,Fast Heart Rate,Tachycardia,Cardiology,EQUIVALENT,1,val
+EVAL008,Sudden Heart Failure,Cardiac Arrest,Cardiology,EQUIVALENT,1,test
+EVAL009,Heart Muscle Disease,Cardiomyopathy,Cardiology,EQUIVALENT,1,train
+EVAL010,Blood Clot in Deep Vein,Deep Vein Thrombosis,Cardiology,EQUIVALENT,1,test
+EVAL011,Low Blood Sugar,Hypoglycemia,Endocrinology,EQUIVALENT,1,train
+EVAL012,High Blood Sugar,Hyperglycemia,Endocrinology,EQUIVALENT,1,test
+EVAL013,Overactive Thyroid,Hyperthyroidism,Endocrinology,EQUIVALENT,1,val
+EVAL014,Underactive Thyroid,Hypothyroidism,Endocrinology,EQUIVALENT,1,test
+EVAL015,Juvenile Diabetes,Diabetes Mellitus Type 1,Endocrinology,EQUIVALENT,1,train
+EVAL016,Adult Onset Diabetes,Diabetes Mellitus Type 2,Endocrinology,EQUIVALENT,1,test
+EVAL017,Stroke,Cerebrovascular Accident,Neurology,EQUIVALENT,1,test
+EVAL018,Mini Stroke,Transient Ischemic Attack,Neurology,EQUIVALENT,1,val
+EVAL019,Seizure Disorder,Epilepsy,Neurology,EQUIVALENT,1,train
+EVAL020,Shaking Palsy,Parkinson's Disease,Neurology,EQUIVALENT,1,test
+EVAL021,Brain Infection,Encephalitis,Neurology,EQUIVALENT,1,val
+EVAL022,Spinal Meningitis,Meningitis,Neurology,EQUIVALENT,1,train
+EVAL023,Lung Infection,Pneumonia,Pulmonology,EQUIVALENT,1,test
+EVAL024,Collapsed Lung,Pneumothorax,Pulmonology,EQUIVALENT,1,val
+EVAL025,Acid Reflux,Gastroesophageal Reflux Disease,Gastroenterology,EQUIVALENT,1,test
+EVAL026,Gallstones,Cholelithiasis,Gastroenterology,EQUIVALENT,1,train
+EVAL027,Kidney Stones,Nephrolithiasis,Nephrology,EQUIVALENT,1,test
+EVAL028,Bone Loss,Osteoporosis,Rheumatology,EQUIVALENT,1,val
+EVAL029,Hives,Urticaria,Dermatology,EQUIVALENT,1,test
+EVAL030,Blood Poisoning,Sepsis,Infectious Disease,EQUIVALENT,1,train
+EVAL031,Diabetes Mellitus,High Blood Sugar,Endocrinology,RELATED,1,test
+EVAL032,Heart Failure,Pulmonary Edema,Cardiology,RELATED,1,test
+EVAL033,Atrial Fibrillation,Stroke,Cardiology,RELATED,1,val
+EVAL034,Atherosclerosis,Coronary Artery Disease,Cardiology,RELATED,1,train
+EVAL035,Bronchial Asthma,Bronchospasm,Pulmonology,RELATED,1,test
+EVAL036,COPD,Emphysema,Pulmonology,RELATED,1,train
+EVAL037,Cirrhosis,Portal Hypertension,Gastroenterology,RELATED,1,val
+EVAL038,Chronic Kidney Disease,Uremia,Nephrology,RELATED,1,test
+EVAL039,Rheumatoid Arthritis,Joint Inflammation,Rheumatology,RELATED,1,test
+EVAL040,Gout,Hyperuricemia,Rheumatology,RELATED,1,train
+EVAL041,Multiple Sclerosis,Demyelination,Neurology,RELATED,1,val
+EVAL042,Parkinson's Disease,Tremor,Neurology,RELATED,1,test
+EVAL043,Pneumonia,Pulmonary Embolism,Pulmonology,MODERATE,0,test
+EVAL044,Osteoarthritis,Osteoporosis,Rheumatology,MODERATE,0,val
+EVAL045,Migraine,Tension Headache,Neurology,MODERATE,0,train
+EVAL046,Crohn's Disease,Celiac Disease,Gastroenterology,MODERATE,0,test
+EVAL047,Nephrotic Syndrome,Glomerulonephritis,Nephrology,MODERATE,0,val
+EVAL048,Hypothyroidism,Hyperthyroidism,Endocrinology,MODERATE,0,train
+EVAL049,Heart Attack,Glaucoma,Mixed,UNRELATED,0,test
+EVAL050,Hypertension,Celiac Disease,Mixed,UNRELATED,0,test
+EVAL051,Asthma,Appendicitis,Mixed,UNRELATED,0,val
+EVAL052,Diabetes,Otitis Media,Mixed,UNRELATED,0,train
+EVAL053,Melanoma,Osteoarthritis,Mixed,UNRELATED,0,test
+EVAL054,Parkinson's Disease,Gallstones,Mixed,UNRELATED,0,train
+EVAL055,Pneumothorax,Alopecia Areata,Mixed,UNRELATED,0,val
+EVAL056,Cirrhosis,Cataract,Mixed,UNRELATED,0,test
+EVAL057,Epilepsy,Nephrolithiasis,Mixed,UNRELATED,0,train
+EVAL058,Rheumatoid Arthritis,Vitiligo,Mixed,UNRELATED,0,test
+EVAL059,Sepsis,Tension Headache,Mixed,UNRELATED,0,val
+EVAL060,Gastroesophageal Reflux Disease,Myasthenia Gravis,Mixed,UNRELATED,0,train
+

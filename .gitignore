@@ -1,0 +1,77 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ── HuggingFace / Torch model cache ───────────────────────────────────────────
+# These are very large (hundreds of MB) and should NOT be in the repo.
+# Run `python download_models.py` to download them locally after cloning.
+.cache/
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# ── FAISS vector index (auto-rebuilt on startup from CSV) ─────────────────────
+vector_store/
+!vector_store/.gitkeep
+
+# ── SQLite database (auto-created on startup) ────────────────────────────────
+database/medical_matcher.db
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Jupyter Notebook checkpoints ─────────────────────────────────────────────
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# ── IDE & Editor ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Environment / Secrets ────────────────────────────────────────────────────
+.env
+.env.*
+*.key
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Test / Coverage artifacts ─────────────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+*.cover
+coverage.xml
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Desktop.ini
+ehthumbs.db
